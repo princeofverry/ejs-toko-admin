@@ -77,6 +77,39 @@ app.get("/done/:id", async (req, res) => {
   });
 });
 
+app.post("/done/:id", async (req, res) => {
+  const id = req.params.id;
+
+  const pembelian = await Pembelian.findByPk(id, { include: Produk });
+  if (!pembelian) return res.send("Transaksi tidak ditemukan");
+
+  if (pembelian.status !== "active") return res.redirect("/pembelian");
+
+  pembelian.status = "done";
+  await pembelian.save();
+
+  res.redirect("/pembelian");
+});
+
+app.post("/done-all", async (req, res) => {
+  const activePurchases = await Pembelian.findAll({
+    where: { status: "active" },
+    include: Produk,
+  });
+
+  const total = activePurchases.reduce((a, b) => a + b.totalHarga, 0);
+
+  for (let item of activePurchases) {
+    item.status = "done";
+    await item.save();
+  }
+
+  res.render("done-all", {
+    items: activePurchases,
+    total,
+  });
+});
+
 app.post("/cancel/:id", async (req, res) => {
   const id = req.params.id;
 

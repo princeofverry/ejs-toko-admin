@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Pembayaran Berhasil</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+
+  <body>
+    <h1 class="text-2xl font-bold mb-4">Pembayaran Berhasil ✅</h1>
+
+    <div style="border: 1px solid #ccc; padding: 16px; width: 360px">
+      <% if (items.length === 0) { %>
+      <p>Tidak ada transaksi yang dibayar.</p>
+      <% } else { %>
+
+      <h3>Daftar Pembelian yang Dibayar</h3>
+
+      <% items.forEach(item => { %>
+      <div style="margin-bottom: 10px">
+        <strong><%= item.Produk.nama %></strong><br />
+        Jumlah: <%= item.jumlah %><br />
+        Harga satuan: Rp <%= item.Produk.harga.toLocaleString() %><br />
+        Total: Rp <%= item.totalHarga.toLocaleString() %>
+      </div>
+      <hr />
+      <% }) %>
+
+      <h3 style="margin-top: 12px">
+        Total Pembayaran: Rp <%= total.toLocaleString() %>
+      </h3>
+
+      <% } %>
+
+      <br />
+      <a href="/pembelian">
+        <button>Kembali ke Pembelian</button>
+      </a>
+    </div>
+  </body>
+</html>

@@ -35,8 +35,7 @@
     <!--        TABLE PEMBELIAN        -->
     <!-- ============================= -->
 
-    <h1 class="text-2xl font-bold mb-4">Daftar Pembelian</h1>
-
+    <h2 class="text-xl font-bold mt-6 mb-2">Pembelian Aktif</h2>
     <table border="1" cellpadding="8" cellspacing="0">
       <thead>
         <tr>
@@ -48,25 +47,43 @@
           <th>Aksi</th>
         </tr>
       </thead>
-
       <tbody>
-        <% pembelian.forEach(item => { %>
+        <% pembelian.filter(p => p.status === "active").forEach(item => { %>
         <tr>
           <td><%= item.id %></td>
           <td><%= item.Produk.nama %></td>
           <td><%= item.jumlah %></td>
           <td>Rp <%= item.totalHarga.toLocaleString() %></td>
           <td><%= item.status %></td>
-
           <td>
-            <% if (item.status !== "cancelled") { %>
             <form method="POST" action="/cancel/<%= item.id %>">
               <button type="submit">Cancel</button>
             </form>
-            <% } else { %>
-            <span>-</span>
-            <% } %>
           </td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+
+    <h2 class="text-xl font-bold mt-6 mb-2">Pembelian Selesai / Done</h2>
+    <table border="1" cellpadding="8" cellspacing="0">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Produk</th>
+          <th>Jumlah</th>
+          <th>Total Harga</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% pembelian.filter(p => p.status === "done").forEach(item => { %>
+        <tr>
+          <td><%= item.id %></td>
+          <td><%= item.Produk.nama %></td>
+          <td><%= item.jumlah %></td>
+          <td>Rp <%= item.totalHarga.toLocaleString() %></td>
+          <td><%= item.status %></td>
         </tr>
         <% }) %>
       </tbody>
@@ -116,12 +133,9 @@
       <% } %>
     </div>
 
-    <% if (activeItems.length > 0) { %>
-
-    <form
-      method="GET"
-      action="/done/<%= activeItems[activeItems.length - 1].id %>"
-    >
+    <% const lastActive = pembelian.filter(p => p.status ===
+    "active").slice(-1)[0]; %> <% if (lastActive) { %>
+    <form method="POST" action="/done-all">
       <button
         type="submit"
         style="
@@ -136,7 +150,6 @@
         Done / Pay
       </button>
     </form>
-
     <% } %>
   </body>
 </html>
