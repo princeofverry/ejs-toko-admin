@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Input Stock</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+
+  <body>
+    <h1 class="text-2xl font-bold mb-4">Tambah / Update Stok Produk</h1>
+
+    <form method="POST" action="/stock" class="form-box">
+      <label for="produk">Produk:</label>
+
+      <select name="produkId" required>
+        <% produk.forEach(p => { %>
+        <option value="<%= p.id %>">
+          <%= p.nama %> (Stok: <%= p.Stock ? p.Stock.jumlah : 0 %>)
+        </option>
+        <% }) %>
+      </select>
+
+      <label for="jumlah">Update Stok:</label>
+
+      <input type="number" name="jumlah" min="0" placeholder="stok baru" />
+
+      <button type="submit">Update Stok</button>
+    </form>
+
+    <hr />
+
+    <h2 class="text-xl font-bold mt-4">Daftar Stok Produk</h2>
+
+    <table border="1" cellpadding="8" cellspacing="0">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Produk</th>
+          <th>Stok Sekarang</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <% produk.forEach(p => { %>
+        <tr>
+          <td><%= p.id %></td>
+          <td><%= p.nama %></td>
+          <td><%= p.Stock ? p.Stock.jumlah : 0 %></td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </body>
+</html>

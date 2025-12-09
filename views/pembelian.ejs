@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Data Pembelian</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+
+  <body>
+    <h1 class="text-2xl font-bold mb-4">Input Pembelian</h1>
+
+    <!-- ============================= -->
+    <!--       FORM INPUT BELI        -->
+    <!-- ============================= -->
+    <form method="POST" action="/pembelian" class="form-box">
+      <label for="produk">Produk:</label>
+      <select name="produkId" required>
+        <% produk.forEach(p => { %>
+        <option value="<%= p.id %>">
+          <%= p.nama %> — Stok: <%= p.Stock ? p.Stock.jumlah : 0 %>
+        </option>
+        <% }) %>
+      </select>
+
+      <label for="jumlah">Jumlah:</label>
+      <input type="number" name="jumlah" min="1" required />
+
+      <button type="submit">Tambah Pembelian</button>
+    </form>
+
+    <hr />
+
+    <!-- ============================= -->
+    <!--        TABLE PEMBELIAN        -->
+    <!-- ============================= -->
+
+    <h1 class="text-2xl font-bold mb-4">Daftar Pembelian</h1>
+
+    <table border="1" cellpadding="8" cellspacing="0">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Produk</th>
+          <th>Jumlah</th>
+          <th>Total Harga</th>
+          <th>Status</th>
+          <th>Aksi</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <% pembelian.forEach(item => { %>
+        <tr>
+          <td><%= item.id %></td>
+          <td><%= item.Produk.nama %></td>
+          <td><%= item.jumlah %></td>
+          <td>Rp <%= item.totalHarga.toLocaleString() %></td>
+          <td><%= item.status %></td>
+
+          <td>
+            <% if (item.status !== "cancelled") { %>
+            <form method="POST" action="/cancel/<%= item.id %>">
+              <button type="submit">Cancel</button>
+            </form>
+            <% } else { %>
+            <span>-</span>
+            <% } %>
+          </td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+
+    <!-- ================================ -->
+    <!--        HITUNG TOTAL STRUK        -->
+    <!-- ================================ -->
+
+    <% const activeItems = pembelian.filter(p => p.status === "active"); let
+    grandTotal = activeItems.reduce((a, b) => a + b.totalHarga, 0); %>
+
+    <hr />
+
+    <!-- ================================ -->
+    <!--            STRUK BELANJA         -->
+    <!-- ================================ -->
+
+    <h2 class="text-xl font-bold mt-6 mb-2">Struk Belanja</h2>
+
+    <div
+      style="
+        margin-top: 10px;
+        padding: 14px;
+        border: 1px dashed #444;
+        width: 320px;
+        font-size: 14px;
+      "
+    >
+      <h3 style="margin-bottom: 6px">Detail Pembelian</h3>
+
+      <% if (activeItems.length === 0) { %>
+      <p>(Belum ada transaksi aktif)</p>
+      <% } else { %> <% activeItems.forEach(item => { %>
+      <div style="margin-bottom: 10px">
+        <strong><%= item.Produk.nama %></strong><br />
+        Jumlah: <%= item.jumlah %><br />
+        Harga Satuan: Rp <%= item.Produk.harga.toLocaleString() %><br />
+        Total: Rp <%= item.totalHarga.toLocaleString() %>
+      </div>
+      <hr />
+      <% }) %>
+
+      <h3 style="margin-top: 12px; font-size: 16px; font-weight: bold">
+        Total Akhir: Rp <%= grandTotal.toLocaleString() %>
+      </h3>
+      <% } %>
+    </div>
+
+    <% if (activeItems.length > 0) { %>
+
+    <form
+      method="GET"
+      action="/done/<%= activeItems[activeItems.length - 1].id %>"
+    >
+      <button
+        type="submit"
+        style="
+          margin-top: 15px;
+          padding: 8px 14px;
+          background: green;
+          color: white;
+          border: none;
+          cursor: pointer;
+        "
+      >
+        Done / Pay
+      </button>
+    </form>
+
+    <% } %>
+  </body>
+</html>

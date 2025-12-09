@@ -1,0 +1,17 @@
+<h3>Daftar Pembelian & Stock Produk</h3>
+
+<table border="1" cellpadding="8">
+  <tr>
+    <th>Nama Produk</th>
+    <th>Harga</th>
+    <th>Stok</th>
+  </tr>
+
+  <% produk.forEach(p => { %>
+  <tr>
+    <td><%= p.nama %></td>
+    <td><%= p.harga %></td>
+    <td><%= p.Stock ? p.Stock.jumlah : 0 %></td>
+  </tr>
+  <% }) %>
+</table>
