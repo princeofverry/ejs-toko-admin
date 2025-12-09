@@ -75,6 +75,7 @@ PORT=3000
 ### 5. Jalankan Aplikasi
 
 ```bash
+npm run seed
 npm start
 ```
 
